@@ -12,6 +12,9 @@ export default {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      height: {
+        "screen-64px": "calc(100vh - 64px)",
+      },
     },
   },
   plugins: [],

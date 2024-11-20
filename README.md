@@ -1,4 +1,4 @@
-#Tecnologia usada NEX.JS
+# Tecnologia usada NEX.JS
 
 • instal (npx create-next-app@latest "diretorio ou pasta"​) </br>
 • Starter (num run dev) </br>

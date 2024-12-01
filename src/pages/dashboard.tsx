@@ -1,5 +1,6 @@
 import { GetServerSideProps } from "next";
 import Head from "next/head";
+import Link from "next/link";
 
 //AUTH
 import { getSession } from "next-auth/react";
@@ -22,6 +23,8 @@ import {
   orderBy,
   where,
   onSnapshot,
+  doc,
+  deleteDoc,
 } from "firebase/firestore";
 
 interface HomeProps {
@@ -101,6 +104,19 @@ export default function Dashboard({ user }: HomeProps) {
     }
   }
 
+  async function handleShare(id: string) {
+    await navigator.clipboard.writeText(
+      `${process.env.NEXT_PUBLIC_URL}/task/${id}`
+    );
+  }
+
+  async function handleDeletTask(id: string) {
+    const docRef = doc(db, "tarefas", id);
+    await deleteDoc(docRef);
+
+    alert("deletado");
+  }
+
   return (
     <main>
       <Head>
@@ -174,16 +190,27 @@ export default function Dashboard({ user }: HomeProps) {
                   {item.public && (
                     <div className="flex items-center  gap-2">
                       <p className="font-light">Publico</p>
-                      <button>
+                      <button onClick={() => handleShare(item.id)}>
                         <FiShare2 color="" />
                       </button>
                     </div>
                   )}
                   <div className="border-b border-gray-300 my-2 "></div>
                   <div className="flex items-center justify-between">
-                    <article className="font-light mx-2">{item.tarefa}</article>
+                    {item.public ? (
+                      <article className="font-light mx-2">
+                        <Link href={`/task/${item.id}`}>{item.tarefa}</Link>
+                      </article>
+                    ) : (
+                      <article className="font-light mx-2">
+                        <p>{item.tarefa}</p>
+                      </article>
+                    )}
 
-                    <button className="flex items-center justify-center mx-2 cursor-pointer">
+                    <button
+                      onClick={() => handleDeletTask(item.id)}
+                      className="flex items-center justify-center mx-2 cursor-pointer"
+                    >
                       <FiTrash2 color="red" size={25} />
                     </button>
                   </div>

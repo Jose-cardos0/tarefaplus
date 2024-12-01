@@ -17,3 +17,8 @@ html {
 button:hover span:last-child {
   transform: translateX(0);
 }
+
+button:disabled {
+  background-color: #cccbcb;
+  cursor: not-allowed;
+}

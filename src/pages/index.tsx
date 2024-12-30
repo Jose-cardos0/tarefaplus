@@ -1,10 +1,21 @@
 import Head from "next/head";
 import Image from "next/image";
+import { GetStaticProps } from "next";
+
+//firebase
+import { collection, getDocs } from "firebase/firestore";
+
+import { db } from "../Components/Firebase";
 
 //img
 import hero from "../../public/assets/hero.png";
 
-export default function Home() {
+interface HomeProps {
+  posts: number;
+  comments: number;
+}
+
+export default function Home({ comments, posts }: HomeProps) {
   return (
     <div className="bg-black w-full h-screen-64px flex justify-center items-center flex-col ">
       <Head>
@@ -36,7 +47,7 @@ export default function Home() {
             bg-white"
           >
             <span className="relative z-10 flex items-center justify-center">
-              Acessar &rsaquo;
+              +{posts} posts
             </span>
             <span
               className="absolute inset-0
@@ -58,7 +69,7 @@ export default function Home() {
             bg-white"
           >
             <span className="relative z-10 flex items-center justify-center">
-              Acessar &rsaquo;
+              +{comments} comentários
             </span>
             <span
               className="absolute inset-0
@@ -73,3 +84,19 @@ export default function Home() {
     </div>
   );
 }
+
+export const getStaticProps: GetStaticProps = async () => {
+  //buscar itens do banco e por no component
+
+  const commentRef = collection(db, "comments");
+  const postRef = collection(db, "tarefas");
+  const commentSnapshot = await getDocs(commentRef);
+  const postSnapshot = await getDocs(postRef);
+  return {
+    props: {
+      posts: postSnapshot.size || 0,
+      comments: commentSnapshot.size || 0,
+    },
+    revalidate: 3600, // sera revalidada a cada 1 hora
+  };
+};

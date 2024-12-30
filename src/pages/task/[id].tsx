@@ -15,6 +15,7 @@ import {
   getDoc,
   addDoc,
   getDocs,
+  deleteDoc,
 } from "firebase/firestore";
 
 //icons
@@ -85,6 +86,13 @@ export default function Task({ item, allComments }: PropsItem) {
     }
   }
 
+  async function handlDelet(id: string) {
+    const docDelRef = doc(db, "comments", id);
+    await deleteDoc(docDelRef);
+
+    setComments((prev) => prev.filter((comments) => comments.id !== id));
+  }
+
   return (
     <div>
       <Head>
@@ -109,7 +117,10 @@ export default function Task({ item, allComments }: PropsItem) {
                     <p className="bg-gray-300 font-extralight pl-4 p-1 text-sm flex items-center ">
                       {comment.name}
                       {comment.user === session?.user?.email && (
-                        <button className="ml-2 hover:scale-105 transition duration-300 ">
+                        <button
+                          onClick={() => handlDelet(comment.id)}
+                          className="ml-2 hover:scale-105 transition duration-300 "
+                        >
                           <FaTrash id="buttonTrash" size={14} color="#999" />
                         </button>
                       )}
